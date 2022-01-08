@@ -1,14 +1,43 @@
-import React from 'react';
-import Search from '../components/Search';
-
+import React, { useState, useEffect } from "react";
+import Search from "../components/Search";
+import Picture from "../components/Picture";
 
 const Homepage = () => {
-    const auth = "563492ad6f91700001000001647b4227b11544b1885d32353a50aba8";
-    return (
-        <div style={{minHeight : "100vh"}}>
-            <Search />
-        </div>
-    )
-}
+  const [input, setInput] = useState("");
+  const searchUrl = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
+  let [data, setData] = useState(null);
+  const auth = "563492ad6f91700001000001647b4227b11544b1885d32353a50aba8";
+  const initUrl = "https://api.pexels.com/v1/curated?page=1&per_page=15";
 
-export default Homepage
+  // fetch data from pexels api
+  const search = async () => {
+    const dataFetch = await fetch(initUrl, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: auth,
+      },
+    });
+    let parseData = await dataFetch.json();
+    setData(parseData.photos);
+  };
+
+  // 進入頁面時執行
+  useEffect(() => {
+    search();
+  }, []);
+
+  return (
+    <div style={{ minHeight: "100vh" }}>
+      <Search search={search} setInput={setInput}/>
+      <div className="pictures">
+        {data &&
+          data.map((d) => {
+            return <Picture data={d} />;
+          })}
+      </div>
+    </div>
+  );
+};
+
+export default Homepage;
