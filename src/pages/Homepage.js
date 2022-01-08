@@ -10,8 +10,8 @@ const Homepage = () => {
   const initUrl = "https://api.pexels.com/v1/curated?page=1&per_page=15";
 
   // fetch data from pexels api
-  const search = async () => {
-    const dataFetch = await fetch(initUrl, {
+  const search = async (url) => {
+    const dataFetch = await fetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -24,12 +24,12 @@ const Homepage = () => {
 
   // 進入頁面時執行
   useEffect(() => {
-    search();
+    search(initUrl);
   }, []);
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <Search search={search} setInput={setInput}/>
+      <Search search={() => search(searchUrl)} setInput={setInput}/>
       <div className="pictures">
         {data &&
           data.map((d) => {
